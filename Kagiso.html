@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kagiso — Internal Auditor & Tech Enthusiast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c0e;
+      --surface: #141417;
+      --border: #222228;
+      --muted: #3a3a44;
+      --text: #e8e8f0;
+      --sub: #8888a0;
+      --accent: #c8f060;
+      --accent2: #60d4f0;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: rgba(12,12,14,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.25rem;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--sub);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      padding: 8rem 2.5rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-text { animation: fadeUp 0.9s ease both; }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-name em { font-style: italic; color: var(--accent); }
+
+    .hero-bio {
+      font-size: 1rem;
+      color: var(--sub);
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #0c0c0e;
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,240,96,0.25); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--text);
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--sub); color: var(--white); }
+
+    .hero-card {
+      animation: fadeUp 0.9s 0.2s ease both;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(200,240,96,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(200,240,96,0.08);
+      border: 1px solid rgba(200,240,96,0.2);
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-card-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .stat-num {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2rem;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--sub);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-card-focus {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--sub);
+    }
+
+    .hero-card-focus strong { color: var(--accent2); }
+
+    /* ─── SECTIONS ─── */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 2.5rem;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .section-sub {
+      font-size: 0.95rem;
+      color: var(--sub);
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 3.5rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--sub);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .about-text p strong { color: var(--text); font-weight: 600; }
+
+    .about-highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .highlight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      transition: border-color 0.2s;
+    }
+
+    .highlight-item:hover { border-color: var(--muted); }
+
+    .highlight-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .highlight-content h4 {
+      font-size: 0.85rem;
+      color: var(--white);
+      margin-bottom: 0.2rem;
+      font-weight: 600;
+    }
+
+    .highlight-content p {
+      font-size: 0.8rem;
+      color: var(--sub);
+      line-height: 1.5;
+    }
+
+    /* ─── SKILLS ─── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.25rem;
+      transition: border-color 0.25s, transform 0.25s;
+      cursor: default;
+    }
+
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .skill-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .skill-name {
+      font-size: 0.85rem;
+      color: var(--white);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .skill-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--sub);
+      line-height: 1.5;
+    }
+
+    .skill-tag {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(200,240,96,0.08);
+      border: 1px solid rgba(200,240,96,0.15);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    /* ─── EXPERIENCE ─── */
+    .timeline {
+      margin-top: 3.5rem;
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), var(--border), transparent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.4rem;
+      top: 6px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(200,240,96,0.5);
+    }
+
+    .timeline-period {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--sub);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-role {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-org {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.88rem;
+      color: var(--sub);
+      line-height: 1.7;
+      max-width: 600px;
+    }
+
+    /* ─── PROJECTS ─── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      transition: border-color 0.25s, transform 0.25s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      border-color: var(--muted);
+      transform: translateY(-4px);
+    }
+
+    .project-number {
+      font-family: 'Instrument Serif', serif;
+      font-size: 3rem;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 0.75rem;
+      font-style: italic;
+    }
+
+    .project-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.83rem;
+      color: var(--sub);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--sub);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      text-align: center;
+    }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4rem 3rem;
+      margin-top: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(96,212,240,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-card::after {
+      content: '';
+      position: absolute;
+      top: -80px; left: -80px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(200,240,96,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-email {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      display: inline-block;
+      margin: 1.5rem 0 2rem;
+      transition: color 0.2s;
+    }
+
+    .contact-email:hover { color: var(--accent); }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sub);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .social-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    footer p span { color: var(--accent); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+
+      #hero {
+        grid-template-columns: 1fr;
+        padding: 7rem 1.25rem 3rem;
+        gap: 2.5rem;
+      }
+
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      section { padding: 4rem 1.25rem; }
+      .contact-card { padding: 2.5rem 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Kagiso Bembe<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Johannesburg, South Africa</div>
+      <h1 class="hero-name">
+        Kagiso<br/><em>Bembe</em>
+      </h1>
+      <p class="hero-bio">
+        Bachelor of Accounting Science student at the University of South  Africa specialising in Internal Auditing. 
+        I sit at the intersection of <strong>governance, technology risk, and IT controls assurance</strong> — 
+        and I believe the future of audit is inseparable from tech.
+      </p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Get in Touch
+        </a>
+        <a href="#projects" class="btn-secondary">View Work</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-card-badge">Available for opportunities</div>
+      <div class="stat-grid">
+        <div class="stat-item">
+          <div class="stat-num">BAccSci</div>
+          <div class="stat-label">Internal Auditing</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">UNISA</div>
+          <div class="stat-label">University</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">IIA</div>
+          <div class="stat-label">Standards Focus</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">King IV</div>
+          <div class="stat-label">Governance</div>
+        </div>
+      </div>
+      <div class="hero-card-focus">
+        Currently focused on: <strong>Internal Audit & IT Risk | Cybersecurity Governance </strong>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 — About</div>
+    <h2 class="section-title">Auditor by training,<br/>technologist by curiosity.</h2>
+
+    <div class="about-grid fade-in">
+      <div class="about-text">
+        <p>
+          I'm a <strong>Bachelor of Accounting Science</strong> student at UNISA, majoring in 
+          Internal Auditing. My academic foundation spans IIA standards, assurance and advisory 
+          services, corporate governance under <strong>King IV</strong>, and the Companies Act 71 of 2008.
+        </p>
+        <p>
+          What sets me apart is my commitment to understanding how technology shapes business risk. 
+          As <strong>Treasurer</strong> of the UNISA Developer Society (UDS), I contribute to the organisation's financial management 
+          while actively exploring cybersecurity, IT governance, and emerging technologies. 
+          I'm also currently working toward writing the Internal Audit Practitioner (IAP) examination with the IIA next year.
+        </p>
+        <p>
+          I enjoy connecting academic concepts to real-world business challenges—from the <strong>Steinhoff</strong> scandal to 
+          <strong>South Africa's FATF greylisting </strong>and approaching problems with the same rigour 
+          I bring to financial statements, control environments, and risk assessments.
+        </p>
+      </div>
+
+      <div class="about-highlights">
+        <div class="highlight-item">
+          <div class="highlight-icon">🎓</div>
+          <div class="highlight-content">
+            <h4>BAccSci — Internal Auditing, UNISA</h4>
+            <p>IIA standards, assurance services, fraud examination & internal control frameworks</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🏛️</div>
+          <div class="highlight-content">
+            <h4>Governance & IT Controls Assurance</h4>
+            <p>King IV, ISA 315, COSO framework, IT general controls & application controls</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🔐</div>
+          <div class="highlight-content">
+            <h4>Cybersecurity & Tech Risk</h4>
+            <p>Virtual internships, hands-on system testing & cybersecurity governance</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">💡</div>
+          <div class="highlight-content">
+            <h4>UNISA Developer Society (UDS)</h4>
+            <p>Governance roles across Cybersecurity, software development, AI & emerging tech</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">02 — Skills & Areas</div>
+    <h2 class="section-title">What I bring<br/>to the table.</h2>
+    <p class="section-sub">
+      A blend of audit methodology, governance frameworks, and technology knowledge 
+      that lets me assess risk where it actually lives — in systems and data.
+    </p>
+
+    <div class="skills-grid fade-in">
+      <div class="skill-card">
+        <span class="skill-icon">📋</span>
+        <div class="skill-name">Internal Audit Standards</div>
+        <div class="skill-desc">IIA International Standards, audit charter design, independence, assurance vs. advisory</div>
+        <span class="skill-tag">Core</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🏢</span>
+        <div class="skill-name">Corporate Governance</div>
+        <div class="skill-desc">King IV, Companies Act 71/2008, board oversight, governance reporting & JSE requirements</div>
+        <span class="skill-tag">Core</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">⚙️</span>
+        <div class="skill-name">IT Controls Assurance</div>
+        <div class="skill-desc">IT general controls, application controls, ISA 315, technology risk assessment</div>
+        <span class="skill-tag">Specialist</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🛡️</span>
+        <div class="skill-name">Cybersecurity Risk</div>
+        <div class="skill-desc">Security frameworks, vulnerability assessment concepts, cyber governance & data risk</div>
+        <span class="skill-tag">Specialist</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🔍</span>
+        <div class="skill-name">Fraud Examination</div>
+        <div class="skill-desc">Fraud Triangle, red flag identification, forensic concepts & internal control design</div>
+        <span class="skill-tag">Core</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">📊</span>
+        <div class="skill-name">Financial Reporting</div>
+        <div class="skill-desc">IFRS Conceptual Framework, IAS 2 & IAS 16, financial statement analysis</div>
+        <span class="skill-tag">Academic</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🤖</span>
+        <div class="skill-name">Emerging Technologies</div>
+        <div class="skill-desc">AI, blockchain, data science implications for audit evidence and control environments</div>
+        <span class="skill-tag">Research</span>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🏗️</span>
+        <div class="skill-name">Non-Profit IA Function</div>
+        <div class="skill-desc">Establishing internal audit in resource-constrained NPO environments from the ground up</div>
+        <span class="skill-tag">Applied</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label">03 — Experience</div>
+    <h2 class="section-title">My journey<br/>so far.</h2>
+
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-period">2026 — Present</div>
+        <div class="timeline-role">Treasure</div>
+        <div class="timeline-org">UNISA Developer Society (UDS) · Student Leadership</div>
+        <div class="timeline-desc">
+          Responsible for financial management, budgeting, reporting, and the development of operational processes that support society initiatives. 
+          Led the implementation of UDS merchandise operations, successfully delivering the first merchandise batch and coordinating the following, including 
+          demand forecasting, supplier engagement, payment reconciliation, financial reporting, and nationwide distribution.
+          Contribute to member engagement initiatives, partnership discussions, and the development of UDS digital platforms 
+          while helping build scalable systems that support student development in technology, innovation, and professional growth.
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-period">2025 - Present</div>
+        <div class="timeline-role">Applause (Utest)</div>
+        <div class="timeline-org">Software Tester· Contract</div>
+        <div class="timeline-desc">
+        • Participated in structured software testing cycles within defined testing scope and requirements <br/>
+        • Conducted exploratory testing to identify functional and usability issues<br/>
+        • Documented findings with clear reproduction steps and supporting evidence (screenshots / recordings)<br/>
+        • Followed testing protocols, confidentiality requirements, and platform guidelines<br/>
+        • Gained hands-on exposure to real-world systems, quality assurance processes, and defect reporting<br/>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-period">2026 — 2026</div>
+        <div class="timeline-role">MWR CyberSec Virtual Internship</div>
+        <div class="timeline-org">Online Programme </div>
+        <div class="timeline-desc">
+        • Performed web application security testing using Burp Suite to intercept and analyze HTTP requests.<br/>
+        • Conducted fuzzing and automated testing using Burp Intruder to identify potential vulnerabilities and hidden endpoints.<br/>
+        • Analyzed application traffic to understand authentication flows, cookies, and session handling.<br/>
+        • Practiced identifying common web security risks aligned with OWASP vulnerabilities.<br/>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-period">2025 - 2026</div>
+        <div class="timeline-role">Introduction to Financial Accounting & Financial Mathematics Tutor</div>
+        <div class="timeline-org">University of South Africa (UNISA)</div>
+        <div class="timeline-desc">
+        Provided personalized tutoring in Introduction to Financial Accounting and Financial Mathematics to enhance student understanding.  
+        Developed engaging lesson plans that simplified complex accounting concepts for diverse learners.  
+        Fostered a supportive learning environment, resulting in improved academic performance of students.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">04 — Projects</div>
+    <h2 class="section-title">Work I'm<br/>proud of.</h2>
+    <p class="section-sub">
+      A mix of academic, governance, and applied projects that reflect how I think about 
+      audit, risk, and technology.
+    </p>
+
+    <div class="projects-grid fade-in">
+      <div class="project-card">
+        <div class="project-number">01</div>
+        <div class="project-title">Goldman Sachs Internal Audit Simulation</div>
+        <a class="timeline-org" href="https://www.theforage.com/completion-certificates/MBA4MnZTNFEoJZGnk/dC4ChhAkhpgB7QvGd_MBA4MnZTNFEoJZGnk_690daab6188b9e61c04c043a_1778056501626_completion_certificate.pdf">View Certificate</a>
+        <div class="project-desc">
+          Completed Goldman Sachs's Internal Audit on Forage. In the simulation I:
+          Completed a job simulation for Internal Audit at Goldman Sachs
+          Conducted comprehensive audits and risk assessments within the Global Banking and Markets division
+          Developed and recommended control improvements and compliance strategies, demonstrating the practical application of auditing principles
+        </div>
+        <div class="project-tags">
+          <span class="tag">AUDIT PROCEDURES</span>
+          <span class="tag">Risk Management</span>
+          <span class="tag">Internal Auditing</span>
+          <span class="tag">Goldman Sachs<pan>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-number">02</div>
+        <div class="project-title">Pwc Digital Assurance & Transparency Simulation</div>
+        <a class="timeline-org" href="https://www.theforage.com/completion-certificates/CA4pBqsy4b4PdyaBP/gHDy4YyDkoBoPH2DM_CA4pBqsy4b4PdyaBP_690daab6188b9e61c04c043a_1763540745002_completion_certificate.pdf">View Certificate</a>
+        <div class="project-desc">
+          I just completed PwC US's Digital Assurance & Transparency on Forage. In the simulation I:
+          Completed a job simulation focused on client engagement to assess digital processes for PwC's Digital Assurance and Transparency team
+          Used a workpaper to test sample items to understand if the control is working
+          Completed a deficiency analysis with information provided by the client
+        </div>
+        <div class="project-tags">
+          <span class="tag">Transparency & Accountability</span>
+          <span class="tag">Risk Assessment</span>
+          <span class="tag">Audit Documentation</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-number">03</div>
+        <div class="project-title">Botium Security Controls and Compliance Assessment</div>
+        <a class="timeline-org"> Expected Completion July 2026</a>
+        <div class="project-desc">
+        Conducted a comprehensive cybersecurity controls and compliance assessment for a fictional company, Botium Toys, as part of the <strong>Google Cybersecurity Professional Certificate.</strong>
+
+        • Evaluated 14 security controls and 12 compliance best practices using NIST CSF and PCI DSS frameworks<br/>
+        • Identified missing controls such as least privilege, IDS, and disaster recovery plans<br/>
+        • Provided risk-based recommendations to improve security posture and ensure regulatory alignment<br/>
+        • Achieved 85.71% controls compliance and 83.33% regulatory compliance after corrective analysis<br/>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-number">04</div>
+        <div class="project-title">MIroute Navigation (Demo)</div>
+        <div class="project-desc">
+          A mobile-first solution aimed at making public transportation more predictable, transparent, and commuter-friendly. 
+          The tool combines real-world travel data with location-aware guidance — all optimized for low-data usage.
+        </div>
+
+      </div>
+      <div class="project-card">
+          <div class="project-number">05</div>
+          <div class="project-title">Harvard's CS50 Computer Science Cources</div>
+          <a class="timeline-org" href="https://certificates.cs50.io/373f2d15-fd93-41f5-a5aa-bc5a65090c0f.pdf?size=letter">View Certificate</a>
+          <div class="project-desc">
+            Completed Harvard University's CS50: Introduction to Cybersecurity, gaining practical knowledge of modern cyber threats, risk management, 
+            network security, digital forensics, cryptography, authentication, and security best practices. The course developed my understanding of how 
+            organizations protect information assets and manage cybersecurity risks. Through hands-on exercises and case studies, I learned to evaluate 
+            security controls, identify vulnerabilities, and understand the relationship between cybersecurity, governance, and business operations.
+
+          </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-number">06</div>
+        <div class="project-title">Academic Excellence</div>
+        <div class="timeline-org">Academic transcripts and supporting evidence are available upon request.</div>
+        <div class="project-desc">
+          Consistently high academic performer with a proven record of excellence across business and technology disciplines. 
+          Achieved a 75% matric average with distinctions in Accounting, Information Technology, and Business Studies, and currently 
+          maintain a university average above 80% from first year through to the first semester of second year. 
+          My academic success reflects strong analytical ability, attention to detail, discipline, and a commitment to continuous learning. 
+          
+        </div>
+
+    </div>
+  </section>
+
+
+
+  <!-- Next steps -->
+  <section id="projects">
+    <div class="section-label">Next steps</div>
+    <h2 class="section-title">What's<br/>next?</h2>
+    <p class="section-sub">
+      Building expertise at the intersection of Internal Audit, Risk Management, Cybersecurity, 
+      and Technology Assurance through professional certifications and hands-on learning.
+    </p>
+
+    <div class="projects-grid fade-in">
+
+      <div class="project-card">
+        <div class="project-number">03</div>
+        <div class="project-title">Internal Audit Practitioner</div>
+        <div class="timeline-org">Institute of Internal Auditors (IIA)</div>
+        <div class="project-desc">
+          Develop professional internal auditing knowledge aligned with global auditing standards, focusing on governance, 
+          risk management, internal controls, and assurance services. This certification supports my goal of bridging business, 
+          audit, and technology to help organizations manage risk and improve operational effectiveness.
+        </div>
+        <div class="project-tags">
+          <span class="tag">Assurance</span>
+          <span class="tag">Compliance</span>
+          <span class="tag">Internal Controls</span>
+          <span class="tag">Risk Management</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-number">01</div>
+        <div class="project-title">Security Operations center (SOC) Analyst - Level 1</div>
+        <div class="timeline-org">TryHackme professional certification</div>
+        <div class="project-desc">
+          Develop foundational blue-team cybersecurity skills through practical training in security monitoring, 
+          threat detection, incident response, log analysis, and security operations. This certification will strengthen 
+          my ability to identify and investigate security events while developing a deeper understanding 
+          of how organizations protect critical systems and data.
+        </div>
+        <div class="project-tags">
+          <span class="tag">Threat Detection</span>
+          <span class="tag">SIEM Fundamentals</span>
+          <span class="tag">Log Analysis</span>
+          <span class="tag">Security Monitoring</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-number">02</div>
+        <div class="project-title">Security Operations center (SOC) Analyst - Level 2</div>
+        <div class="timeline-org">TryHackme professional certification</div>
+        <div class="project-desc">
+          Advance defensive security capabilities by investigating complex threats, 
+          performing threat hunting activities, analyzing malware behavior, and responding to sophisticated cyber incidents. 
+          This certification will further develop the technical expertise required to assess cybersecurity risks and security controls within modern organizations.
+        </div>
+        <div class="project-tags">
+          <span class="tag">Threat Hunting</span>
+          <span class="tag">Malware Analysis</span>
+          <span class="tag">Incident Response</span>
+          <span class="tag">Digital Forensics</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <hr class="divider"/>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label" style="justify-content:center;">05 — Contact</div>
+    <h2 class="section-title">Let's connect.</h2>
+    <p class="section-sub" style="margin: 0 auto;">
+      Whether you're recruiting for audit programmes, collaborating on audit work, 
+      or exploring ideas at the intersection of audit and tech — reach out.
+    </p>
+
+    <div class="contact-card fade-in">
+      <p style="font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--sub); letter-spacing:0.1em; text-transform:uppercase;">
+        Open to vacation programmes, internships & graduate programmes
+      </p>
+      <a href="mailto:Kagiso.create@gmail.com" class="contact-email">
+        Kagiso.create@gmail.com
+      </a>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/kagiso-bembe" target="_blank" class="social-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 <span>Kagiso</span> — All rights reserved</p>
+    <p style="font-family:'DM Mono',monospace; font-size:0.65rem;">
+      Built with <span>HTML · CSS · JS</span>
+    </p>
+  </footer>
+
+  <script>
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+      });
+
+      navLinks.forEach(link => {
+        link.style.color = '';
+        if (link.getAttribute('href') === '#' + current) {
+          link.style.color = 'var(--accent)';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
